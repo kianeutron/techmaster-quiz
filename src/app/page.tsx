@@ -302,7 +302,7 @@ export default function Home() {
                 </div>
               )}
               {filtered.map((q) => (
-                <QuestionCard key={q.id} q={q} total={questions.length} />
+                <QuestionCard key={q.id} q={q} total={questions.length} hideAnswers={hideAllAnswers} />
               ))}
             </div>
           )}
@@ -330,6 +330,9 @@ function StudyMode({
   const [showAnswer, setShowAnswer] = useState(hideAnswers);
   const [showExplanation, setShowExplanation] = useState(false);
   const [mastered, setMastered] = useState<Set<number>>(new Set());
+
+  // Sync showAnswer with hideAnswers toggle
+  const effectiveShowAnswer = hideAnswers ? false : showAnswer;
 
   const q = questions[currentIdx];
   const isMastered = mastered.has(q.id);
@@ -414,14 +417,14 @@ function StudyMode({
               <div
                 key={idx}
                 className={`flex items-start gap-2.5 sm:gap-4 px-3 sm:px-5 py-3 sm:py-4 rounded-xl border transition-all duration-200 ${
-                  isCorrect && showAnswer
+                  isCorrect && effectiveShowAnswer
                     ? "bg-emerald-500/15 border-emerald-500/50 ring-1 ring-emerald-500/20"
                     : "bg-gray-800/50 border-gray-700/50"
                 }`}
               >
                 <span
                   className={`flex-shrink-0 w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold ${
-                    isCorrect && showAnswer
+                    isCorrect && effectiveShowAnswer
                       ? "bg-emerald-500 text-white"
                       : "bg-gray-700 text-gray-400"
                   }`}
@@ -430,7 +433,7 @@ function StudyMode({
                 </span>
                 <span
                   className={`text-[13px] sm:text-[15px] leading-relaxed pt-0.5 sm:pt-1 break-words min-w-0 ${
-                    isCorrect && showAnswer
+                    isCorrect && effectiveShowAnswer
                       ? "text-emerald-300 font-medium"
                       : "text-gray-300"
                   }`}
@@ -442,7 +445,7 @@ function StudyMode({
                     {option}
                   </code>
                 </span>
-                {isCorrect && showAnswer && (
+                {isCorrect && effectiveShowAnswer && (
                   <span className="ml-auto flex-shrink-0 text-emerald-400 text-base sm:text-xl font-bold">
                     &#10003;
                   </span>
@@ -454,7 +457,7 @@ function StudyMode({
 
         {/* Show Answer / Explanation buttons */}
         <div className="px-4 sm:px-8 pb-4 sm:pb-5 flex gap-2 sm:gap-3">
-          {!showAnswer && (
+          {!effectiveShowAnswer && !hideAnswers && (
             <button
               onClick={() => setShowAnswer(true)}
               className="px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/30 transition-all cursor-pointer"
@@ -462,7 +465,7 @@ function StudyMode({
               Show Answer
             </button>
           )}
-          {showAnswer && q.explanation && (
+          {effectiveShowAnswer && q.explanation && (
             <button
               onClick={() => setShowExplanation(!showExplanation)}
               className="px-4 sm:px-6 py-2.5 sm:py-3 text-[13px] sm:text-sm rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/30 transition-all cursor-pointer"

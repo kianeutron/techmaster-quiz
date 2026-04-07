@@ -3,9 +3,8 @@
 import { useState } from "react";
 import type { QuizQuestion } from "@/data/quizz1";
 
-export default function QuestionCard({ q, total }: { q: QuizQuestion; total?: number }) {
+export default function QuestionCard({ q, total, hideAnswers }: { q: QuizQuestion; total?: number; hideAnswers?: boolean }) {
   const [showExplanation, setShowExplanation] = useState(false);
-  const [hideAnswer, setHideAnswer] = useState(false);
 
   return (
     <div className="bg-gray-900 border border-gray-700 rounded-2xl overflow-hidden shadow-lg hover:shadow-emerald-500/10 transition-shadow duration-300">
@@ -15,12 +14,6 @@ export default function QuestionCard({ q, total }: { q: QuizQuestion; total?: nu
           QUESTION {q.id}/{total ?? q.id}
         </span>
         <div className="flex gap-1.5 sm:gap-2">
-          <button
-            onClick={() => setHideAnswer(!hideAnswer)}
-            className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition-colors cursor-pointer"
-          >
-            {hideAnswer ? "Show" : "Hide"}
-          </button>
           <button
             onClick={() => setShowExplanation(!showExplanation)}
             className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-[11px] sm:text-xs rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 transition-colors cursor-pointer"
@@ -47,14 +40,14 @@ export default function QuestionCard({ q, total }: { q: QuizQuestion; total?: nu
             <div
               key={idx}
               className={`flex items-start gap-2.5 sm:gap-3 px-3 sm:px-5 py-3 sm:py-3.5 rounded-xl border transition-all duration-200 ${
-                isCorrect && !hideAnswer
+                isCorrect && !hideAnswers
                   ? "bg-emerald-500/15 border-emerald-500/50"
                   : "bg-gray-800/50 border-gray-700/50"
               }`}
             >
               <span
                 className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold mt-0.5 ${
-                  isCorrect && !hideAnswer
+                  isCorrect && !hideAnswers
                     ? "bg-emerald-500 text-white"
                     : "bg-gray-700 text-gray-400"
                 }`}
@@ -63,7 +56,7 @@ export default function QuestionCard({ q, total }: { q: QuizQuestion; total?: nu
               </span>
               <span
                 className={`text-[13px] sm:text-[15px] leading-relaxed pt-0.5 break-words min-w-0 ${
-                  isCorrect && !hideAnswer
+                  isCorrect && !hideAnswers
                     ? "text-emerald-300 font-medium"
                     : "text-gray-300"
                 }`}
@@ -75,7 +68,7 @@ export default function QuestionCard({ q, total }: { q: QuizQuestion; total?: nu
                   {option}
                 </code>
               </span>
-              {isCorrect && !hideAnswer && (
+              {isCorrect && !hideAnswers && (
                 <span className="ml-auto flex-shrink-0 text-emerald-400 text-base sm:text-lg">
                   &#10003;
                 </span>
